@@ -4,8 +4,7 @@ if (!empty($main->filterPost("limit"))) {
     $limit = $main->filterPost("limit");
 }
 
-$sql = $main->selectCount("report", "id").$main->whereSingle(array("isActive"=>"0"));
-
+$sql = $main->selectCount("report", "id") . $main->whereSingle(array("isActive" => "0"));
 $result = $main->adminDB[$_SESSION["db_1"]]->query($sql);
 $r = $result->fetch_assoc();
 $max_count = $r["count(id)"];
@@ -23,6 +22,8 @@ if (isset($_REQUEST["pg"])) {
     $offset = 0;
 }
 $i = 0;
+$sql = $main->update(array("rd" => "1"), "notification"); //. $this->whereSingle(array("tid" => $_REQUEST["id"]));
+$main->adminDB[$_SESSION["db_1"]]->query(($sql));
 ?>
 <div class="panel panel-danger">
     <div class="panel-body">
@@ -30,7 +31,7 @@ $i = 0;
             <div class="col-lg-6">
                 <h6>Select <span>
 
-                        <select id="limit" name="limit" onchange="return postURL3('<?php echo $obj->encdata("C_OpenLink2") . "&v=" . $obj->encdata("V_AllRepotsTable") . "&pg=" . $page; ?>', '#display', '1');">
+                        <select id="limit" name="limit" onchange="return postURL3('<?php echo $obj->encdata("C_OpenLink2") . "&v=" . $obj->encdata("V_NewCommetTable") . "&pg=" . $page; ?>', '#display', '1');">
                             <option value="<?php echo $limit; ?>"><?php echo $limit; ?></option>
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -39,26 +40,21 @@ $i = 0;
                     </span>
                 </h6>
             </div>
-            
+
         </div>
 
         <div class="form-group" id='adp'>
             <div class="col-lg-12">
                 <table class="table table-hover table-responsive table-bordered">
                     <tr>
-                        <th>#</th>
-                        <th>Post_id</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Message</th>
-                        <th>IP</th>
-                        <th>IsDate</th>
-                        
-                        
-                        
+                        <th>Edit Post</th>
+                        <th>Author</th>
+                        <th>Comment</th>
+                        <th>In Response To</th>
+                        <th>Submitted On</th>
                     </tr>
                     <?php
-                    $sql = $main->select("report", $_SESSION["db_1"]).$main->whereSingle(array("isActive"=>"0")).$main->orderBy("DESC","id") . $main->limitWithOffset($offset, $limit);
+                    $sql = $main->select("report", $_SESSION["db_1"]) . $main->whereSingle(array("isActive" => "0")) . $main->orderBy("DESC", "id") . $main->limitWithOffset($offset, $limit);
                     $result = $main->adminDB[$_SESSION["db_1"]]->query($sql);
                     $i = 0;
                     while ($row = $result->fetch_assoc()) {
@@ -66,30 +62,69 @@ $i = 0;
                         ?>
 
                         <tr>
-                            <td><?php echo $row["id"]; ?></td>
-                            <td><?php echo $row["post_id"]; ?></td>
-                            <td><?php echo $row["name"]; ?></td>
-                           
-                            <td><?php echo $row["email"]; ?></td>
-                            <td><?php echo $row["message"]; ?></td>
-                            <td><?php echo $row["ip"]; ?></td>
+                            <td><a href="/?r=<?php echo $obj->encdata("C_OpenLink") . "&v=" . $obj->encdata("VEditPost") . "&id=" . $row["post_id"]; ?>"><?php echo $row["post_id"]; ?></a></td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-lg-2">
+                                        <img src="assets/ap/dist/img/avatar5.png" class="user-image" style="height: 30px; width: auto;" alt="Image">
+                                    </div>
+                                    <div class="col-lg-10">
+                                        <?php echo $row["name"]; ?><br>
+                                        <a href="mailto:<?php echo $row["email"]; ?>"><?php echo $row["email"]; ?></a>
+
+                                    </div>
+                                </div>
+                            </td>  
+
+                            <td>
+                                <div class="from-group">
+                                    <div class="col-lg-12">
+                                        <?php echo $row["message"]; ?>
+                                    </div>
+                                </div>
+                                <div class="from-group">
+                                    <div class="col-lg-12">
+                                         <?php
+                                $post_Resutl = $main->adminDB[$_SESSION["db_1"]]->query($main->select("post", $_SESSION["db_1"]) . $main->whereSingle(array("id" => $row["post_id"])));
+                                $post_row = $post_Resutl->fetch_assoc();
+                                ?>
+                                        <a href="#" onclick=" return postURL('<?php echo $obj->encdata("C_DeleteReportMsg") . "&v=" . $obj->encdata("VAllNewComments"); ?>', '#display', '<?php echo $row["id"]; ?>')">Delete</a>
+                                        
+                                    </div>
+                                </div>
+
+                            </td>
+
+                            <td>
+                                
+                                <div class="from-group">
+                                    <div class="col-lg-12">
+                                        <a href="/?r=<?php echo $obj->encdata("C_OpenLink") . "&v=" . $obj->encdata("VEditPost") . "&id=" . $row["post_id"]; ?>"><?php echo $post_row["title"]; ?></a>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <a href="https://worldfree4u2.com/?r=<?php echo $obj->encdata("C_OpenLink") . "&v=" . $obj->encdata("VSingleMovie") . "&c=" . $obj->encdata($post_row["id"]); ?>" target="_blank">ViewPost</a>
+                                    </div>
+                                </div>
+                                <div class="from-group">
+                                    <div class="col-lg-12">
+                                        <span class="badge badge-primary"><?php echo $post_row["comment"]; ?></span>
+                                    </div>
+                                </div>
+
+                            </td>
                             <td><?php echo $row["isDate"]; ?></td>
-                           
+
                         </tr>
-    <?php
-}
-?>
+
+                        <?php
+                    }
+                    ?>
                     <tr>
-                        <th>#</th>
-                        <th>Post_id</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Message</th>
-                        <th>IP</th>
-                        <th>IsDate</th>
-                        
-                        
-                        
+                        <th>Edit Post</th>
+                        <th>Author</th>
+                        <th>Comment</th>
+                        <th>In Response To</th>
+                        <th>Submitted On</th>
                     </tr>
                 </table>
             </div>
@@ -97,12 +132,12 @@ $i = 0;
         </div>
         <div class="form-group">
             <div class="col-lg-6">
-<?php
-$ct = ($limit + $offset);
-if ($ct > $max_count) {
-    $ct = $max_count;
-}
-?>
+                <?php
+                $ct = ($limit + $offset);
+                if ($ct > $max_count) {
+                    $ct = $max_count;
+                }
+                ?>
                 Showing Restul <?php echo $offset . " to " . $ct . " of " . $max_count . " entries"; ?>
             </div>
             <div class="col-lg-6">
@@ -115,7 +150,7 @@ if ($ct > $max_count) {
                         $t = $page - 1;
                         ?> <li class = 'disabled'><a href="#">&laquo;</a></li><?php
                         } else {
-                            ?> <li><a href = 'javascript:void(0)' onclick="return postURL3('<?php echo $obj->encdata("C_OpenLink2") . "&v=" . $obj->encdata("V_AllRepotsTable") . "&pg=" . $k; ?>', '#display', '1');">&laquo;</a></li><?php
+                            ?> <li><a href = 'javascript:void(0)' onclick="return postURL3('<?php echo $obj->encdata("C_OpenLink2") . "&v=" . $obj->encdata("V_NewCommetTable") . "&pg=" . $k; ?>', '#display', '1');">&laquo;</a></li><?php
                         }
 
                         while ($i < $max_count) {
@@ -123,7 +158,7 @@ if ($ct > $max_count) {
                                 $fl = $k;
                                 ?><li class = 'disabled'> <a href="#"><?php echo $k; ?></a></li><?php
                             } else {
-                                ?><li><a href ='javascript:void(0)' onclick="return postURL3('<?php echo $obj->encdata("C_OpenLink2") . "&v=" . $obj->encdata("V_AllRepotsTable") . "&pg=" . $k; ?>', '#display', '1');"> <?php echo $k; ?></a></li><?php
+                                ?><li><a href ='javascript:void(0)' onclick="return postURL3('<?php echo $obj->encdata("C_OpenLink2") . "&v=" . $obj->encdata("V_NewCommetTable") . "&pg=" . $k; ?>', '#display', '1');"> <?php echo $k; ?></a></li><?php
                             }
                             $k++;
                             $i = $i + $limit;
@@ -134,8 +169,8 @@ if ($ct > $max_count) {
                             ?> <li class = 'disabled'><a href="#">&raquo;</a></li><?php
                         } else {
                             $t = $page + 1;
-                            ?> <li><a href = 'javascript:void(0)' onclick="return postURL3('<?php echo $obj->encdata("C_OpenLink2") . "&v=" . $obj->encdata("V_AllRepotsTable") . "&pg=" . $t; ?>', '#display', '1');">&raquo;</a></li><?php
-                        }
+                            ?> <li><a href = 'javascript:void(0)' onclick="return postURL3('<?php echo $obj->encdata("C_OpenLink2") . "&v=" . $obj->encdata("V_NewCommetTable") . "&pg=" . $t; ?>', '#display', '1');">&raquo;</a></li><?php
+                    }
                         ?>
 
 

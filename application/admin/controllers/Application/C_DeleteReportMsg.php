@@ -7,13 +7,13 @@
  */
 
 /**
- * Description of C_ApproveComment
+ * Description of C_DeleteCompletePost
  *
  * @author asksoft
  */
 
 require_once controller;
-class C_ApproveComment extends CAaskController {
+class C_DeleteReportMsg extends CAaskController {
 
     //put your code here
     public $visState = false;
@@ -31,11 +31,15 @@ class C_ApproveComment extends CAaskController {
 
     public function initialize() {
         parent::initialize();
-        $sql=$this->update(array("isActive"=>"1"),"comment").$this->whereSingle(array("id"=>$this->filterPost("id")));
-        
-         $this->adminDB[$_SESSION["db_1"]]->query($sql);
-        $_SESSION["msg"]= $this->printMessage("Success...!", "success");
-        echo "<span>Approved</span>";
+        try{
+            $id=$this->filterPost("id");
+            $this->adminDB[$_SESSION["db_1"]]->query($this->delete("report").$this->whereSingle(array("id"=>$id)));
+            $_SESSION["msg"]=$this->printMessage("Success", "success");
+            $this->isLoadView("V_AllRepotsTable", false, array());
+            
+        } catch (Exception $ex) {
+             $_SESSION["msg"]=$this->printMessage($ex->getMessage(), "danger");
+        }
         return;
     }
 

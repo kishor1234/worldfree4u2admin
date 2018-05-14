@@ -37,7 +37,7 @@ class C_DeleteSComment extends CAaskController {
         $sql=$this->delete("comment").$this->whereSingle(array("id"=>$this->filterPost("id")));
         $this->adminDB[$_SESSION["db_1"]]->query($sql);
         $_SESSION["msg"]= $this->printMessage("Success...!", "success");
-        $this->isLoadView("V_ApproveCommentTable", false, array());
+        $this->isLoadView("V_NewCommetTable", false, array());
         return;
     }
 

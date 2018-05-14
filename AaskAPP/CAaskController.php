@@ -234,8 +234,10 @@ class CAaskController extends CI_Controller {
     }*/
      public function createDBO() {
         $tempObjArray = array();
-        $tempObjArray["epiz_22066016_db"]  = new mysqli("sql113.epizy.com", "epiz_22066016", "Kishor123", "epiz_22066016_db");
-        $_SESSION["db_1"]="epiz_22066016_db";
+        //$tempObjArray["movies4k_db"]  = new mysqli("localhost", "root", "root", "movies4k_db");
+        //$_SESSION["db_1"]="movies4k_db";
+         $tempObjArray["epiz_22066016_db"]  = new mysqli("sql113.epizy.com", "epiz_22066016", "Kishor123", "epiz_22066016_db");
+         $_SESSION["db_1"]="epiz_22066016_db";
         return $tempObjArray;
     }
     

@@ -41,6 +41,7 @@ class C_DeleteComment extends CAaskController {
 
     public function execute() {
         parent::execute();
+        //$this->isLoadView("V_NewCommentTable", false, array());
         return;
     }
 

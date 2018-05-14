@@ -22,7 +22,8 @@ $row=$result->fetch_assoc();
         <div class="col-md-12">
             <div id="display"></div>
             <div class="panel panel-primary">
-               
+                
+               <?php $desc="".$row["description"];?>
                 <div class="panel-body">
                     <legend>EDIT POST</legend>
                     <form action="#" method="post"  id="myForm" onsubmit="return postData('<?php echo $obj->encdata("C_UpdatePostData"); ?>', '#display', '#myForm')" enctype="multipart/form-data">
@@ -47,7 +48,7 @@ $row=$result->fetch_assoc();
                                     </div>
                                 <div class="form-group">
                                     <div class="col-lg-12 nopadding">
-                                        <textarea name="txtEditor" id="txtEditor"><?php echo $row["description"];?></textarea> 
+                                        <textarea name="txtEditor" id="txtEditor"><?php  echo $row["description"];?></textarea> 
 
                                     </div>
                                     <br>
@@ -93,3 +94,8 @@ $row=$result->fetch_assoc();
 
     </div>
 </section>
+<script>
+    $("document").ready(function(){
+       $("#txtEditor").html(<?php $desc;?>);
+    });
+    </script>

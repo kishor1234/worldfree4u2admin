@@ -65,15 +65,8 @@ $application_folder = 'application';
 
 switch ($op)
 {
-    case 'member':
-        $application_folder = 'application/member';
-        break;
-    case 'super':
-        $application_folder = 'application/admin';
-        break;
-    
     default :
-        $application_folder = 'application/web';
+        $application_folder = 'application/admin';
         break;
 }
 //define("aaskModel", $aaskModel);

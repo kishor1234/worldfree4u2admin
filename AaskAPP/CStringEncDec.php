@@ -16,7 +16,7 @@ class CStringEncDec {
         $iv = substr(hash('sha256', self::secret_iv), 0, 16);
         $output = openssl_encrypt($message, self::encrypt_method, $key, 0, $iv);
         $output = base64_encode($output);
-        return $output;
+        return $message;//$output
     }
 
    public function decdata($message) {
@@ -24,7 +24,7 @@ class CStringEncDec {
         $key = hash('sha256', self::secret_key);
         $iv = substr(hash('sha256', self::secret_iv), 0, 16);
         $output = openssl_decrypt(base64_decode($message), self::encrypt_method, $key, 0, $iv);
-        return $output;
+        return $message;//$output
     }
 
 }
